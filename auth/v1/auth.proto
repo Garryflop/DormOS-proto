@@ -8,7 +8,7 @@ service AuthService {
   rpc Register(RegisterRequest) returns (RegisterResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
-  rpc GetUserProfile(GetUserProfileRequest) returns (UserProfileResponse);
+  rpc GetUserProfile(GetUserProfileRequest) returns (GetUserProfileResponse);
 }
 
 message RegisterRequest {
@@ -45,7 +45,7 @@ message GetUserProfileRequest {
   string user_id = 1;
 }
 
-message UserProfileResponse {
+message GetUserProfileResponse {
   string user_id = 1;
   string email = 2;
   string full_name = 3;

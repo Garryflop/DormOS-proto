@@ -6,8 +6,8 @@ option go_package = "github.com/Garryflop/DormOS-gen-go/issue/v1;issuev1";
 
 service IssueService {
   rpc CreateIssue(CreateIssueRequest) returns (CreateIssueResponse);
-  rpc GetIssue(GetIssueRequest) returns (IssueResponse);
-  rpc ListIssuesByRoom(ListIssuesByRoomRequest) returns (ListIssuesResponse);
+  rpc GetIssue(GetIssueRequest) returns (GetIssueResponse);
+  rpc ListIssuesByRoom(ListIssuesByRoomRequest) returns (ListIssuesByRoomResponse);
   rpc UpdateIssueStatus(UpdateIssueStatusRequest) returns (UpdateIssueStatusResponse);
 }
 
@@ -26,7 +26,7 @@ message GetIssueRequest {
   string issue_id = 1;
 }
 
-message IssueResponse {
+message GetIssueResponse {
   string issue_id = 1;
   string room_number = 2;
   string category = 3;
@@ -39,8 +39,8 @@ message ListIssuesByRoomRequest {
   string room_number = 1;
 }
 
-message ListIssuesResponse {
-  repeated IssueResponse issues = 1;
+message ListIssuesByRoomResponse {
+  repeated GetIssueResponse issues = 1;
 }
 
 message UpdateIssueStatusRequest {
