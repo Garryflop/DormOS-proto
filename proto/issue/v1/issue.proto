@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package issue.v1;
+
+option go_package = "github.com/Garryflop/DormOS-gen-go/issue/v1;issuev1";
+
+service IssueService {
+  rpc CreateIssue(CreateIssueRequest) returns (CreateIssueResponse);
+  rpc GetIssue(GetIssueRequest) returns (IssueResponse);
+  rpc ListIssuesByRoom(ListIssuesByRoomRequest) returns (ListIssuesResponse);
+  rpc UpdateIssueStatus(UpdateIssueStatusRequest) returns (UpdateIssueStatusResponse);
+}
+
+message CreateIssueRequest {
+  string room_number = 1;
+  string category = 2;
+  string description = 3;
+  repeated string photo_urls = 4;
+}
+
+message CreateIssueResponse {
+  string issue_id = 1;
+}
+
+message GetIssueRequest {
+  string issue_id = 1;
+}
+
+message IssueResponse {
+  string issue_id = 1;
+  string room_number = 2;
+  string category = 3;
+  string description = 4;
+  string status = 5;
+  int64 created_at = 6;
+}
+
+message ListIssuesByRoomRequest {
+  string room_number = 1;
+}
+
+message ListIssuesResponse {
+  repeated IssueResponse issues = 1;
+}
+
+message UpdateIssueStatusRequest {
+  string issue_id = 1;
+  string new_status = 2;
+}
+
+message UpdateIssueStatusResponse {
+  bool success = 1;
+}
