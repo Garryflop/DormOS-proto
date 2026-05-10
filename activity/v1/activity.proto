@@ -1,0 +1,156 @@
+syntax = "proto3";
+
+package activity.v1;
+
+option go_package = "github.com/Garryflop/DormOS-gen-go/activity/v1;activityv1";
+
+service ActivityService {
+  // Events (admin creates, students view)
+  rpc CreateEvent(CreateEventRequest) returns (CreateEventResponse);
+  rpc GetEvent(GetEventRequest) returns (GetEventResponse);
+  rpc ListEvents(ListEventsRequest) returns (ListEventsResponse);
+  rpc UpdateEvent(UpdateEventRequest) returns (UpdateEventResponse);
+  rpc DeleteEvent(DeleteEventRequest) returns (DeleteEventResponse);
+
+  // Registration (student)
+  rpc RegisterForEvent(RegisterForEventRequest) returns (RegisterForEventResponse);
+  rpc CancelRegistration(CancelRegistrationRequest) returns (CancelRegistrationResponse);
+
+  // Attendance (manager)
+  rpc RecordAttendance(RecordAttendanceRequest) returns (RecordAttendanceResponse);
+
+  // Notifications
+  rpc SendNotification(SendNotificationRequest) returns (SendNotificationResponse);
+  rpc ListMyNotifications(ListMyNotificationsRequest) returns (ListMyNotificationsResponse);
+  rpc MarkAsRead(MarkAsReadRequest) returns (MarkAsReadResponse);
+  rpc MarkAllAsRead(MarkAllAsReadRequest) returns (MarkAllAsReadResponse);
+}
+
+// --- CreateEvent ---
+message CreateEventRequest {
+  string title = 1;
+  string description = 2;
+  string location = 3;
+  int64 start_time = 4;
+  int64 end_time = 5;
+  int32 max_participants = 6;
+}
+message CreateEventResponse {
+  string event_id = 1;
+}
+
+// --- GetEvent ---
+message GetEventRequest {
+  string event_id = 1;
+}
+message GetEventResponse {
+  string event_id = 1;
+  string title = 2;
+  string description = 3;
+  string location = 4;
+  int64 start_time = 5;
+  int64 end_time = 6;
+  int32 max_participants = 7;
+  int32 registered_count = 8;
+  int64 created_at = 9;
+}
+
+// --- ListEvents ---
+message ListEventsRequest {
+  bool upcoming_only = 1;
+}
+message ListEventsResponse {
+  repeated GetEventResponse events = 1;
+}
+
+// --- UpdateEvent ---
+message UpdateEventRequest {
+  string event_id = 1;
+  string title = 2;
+  string description = 3;
+  string location = 4;
+  int64 start_time = 5;
+  int64 end_time = 6;
+  int32 max_participants = 7;
+}
+message UpdateEventResponse {
+  bool success = 1;
+}
+
+// --- DeleteEvent ---
+message DeleteEventRequest {
+  string event_id = 1;
+}
+message DeleteEventResponse {
+  bool success = 1;
+}
+
+// --- RegisterForEvent ---
+message RegisterForEventRequest {
+  string event_id = 1;
+  string user_id = 2;
+}
+message RegisterForEventResponse {
+  bool success = 1;
+}
+
+// --- CancelRegistration ---
+message CancelRegistrationRequest {
+  string event_id = 1;
+  string user_id = 2;
+}
+message CancelRegistrationResponse {
+  bool success = 1;
+}
+
+// --- RecordAttendance ---
+message RecordAttendanceRequest {
+  string event_id = 1;
+  string user_id = 2;
+  bool attended = 3;
+}
+message RecordAttendanceResponse {
+  bool success = 1;
+}
+
+// --- SendNotification ---
+message SendNotificationRequest {
+  string user_id = 1;
+  string title = 2;
+  string message = 3;
+  string channel = 4; // "EMAIL", "IN_APP", "BOTH"
+}
+message SendNotificationResponse {
+  bool success = 1;
+}
+
+// --- ListMyNotifications ---
+message ListMyNotificationsRequest {
+  string user_id = 1;
+}
+message ListMyNotificationsResponse {
+  repeated NotificationItem notifications = 1;
+}
+message NotificationItem {
+  string notification_id = 1;
+  string title = 2;
+  string message = 3;
+  bool is_read = 4;
+  int64 created_at = 5;
+}
+
+// --- MarkAsRead ---
+message MarkAsReadRequest {
+  string notification_id = 1;
+}
+message MarkAsReadResponse {
+  bool success = 1;
+}
+
+// --- MarkAllAsRead ---
+message MarkAllAsReadRequest {
+  string user_id = 1;
+}
+message MarkAllAsReadResponse {
+  int32 updated_count = 1;
+}

@@ -5,49 +5,138 @@ package auth.v1;
 option go_package = "github.com/Garryflop/DormOS-gen-go/auth/v1;authv1";
 
 service AuthService {
+  // Public
   rpc Register(RegisterRequest) returns (RegisterResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
+  rpc ResetPasswordRequest(ResetPasswordRequestReq) returns (ResetPasswordRequestResp);
+  rpc ResetPasswordConfirm(ResetPasswordConfirmRequest) returns (ResetPasswordConfirmResponse);
+
+  // Authenticated (student+)
   rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
-  rpc GetUserProfile(GetUserProfileRequest) returns (GetUserProfileResponse);
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
+  rpc GetProfile(GetProfileRequest) returns (GetProfileResponse);
+  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse);
+
+  // Admin only
+  rpc SuspendAccount(SuspendAccountRequest) returns (SuspendAccountResponse);
+  rpc ActivateAccount(ActivateAccountRequest) returns (ActivateAccountResponse);
 }
 
+// --- Register ---
 message RegisterRequest {
   string email = 1;
   string password = 2;
   string full_name = 3;
 }
-
 message RegisterResponse {
   string user_id = 1;
 }
 
+// --- Login ---
 message LoginRequest {
   string email = 1;
   string password = 2;
 }
-
 message LoginResponse {
   string access_token = 1;
   string refresh_token = 2;
 }
 
+// --- ValidateToken ---
 message ValidateTokenRequest {
   string access_token = 1;
 }
-
 message ValidateTokenResponse {
   bool is_valid = 1;
   string user_id = 2;
   string role = 3;
 }
 
-message GetUserProfileRequest {
-  string user_id = 1;
+// --- RefreshToken ---
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+message RefreshTokenResponse {
+  string access_token = 1;
+  string refresh_token = 2;
 }
 
-message GetUserProfileResponse {
+// --- Logout ---
+message LogoutRequest {
+  string access_token = 1;
+}
+message LogoutResponse {
+  bool success = 1;
+}
+
+// --- ChangePassword ---
+message ChangePasswordRequest {
+  string user_id = 1;
+  string old_password = 2;
+  string new_password = 3;
+}
+message ChangePasswordResponse {
+  bool success = 1;
+}
+
+// --- ResetPasswordRequest ---
+message ResetPasswordRequestReq {
+  string email = 1;
+}
+message ResetPasswordRequestResp {
+  bool success = 1;
+}
+
+// --- ResetPasswordConfirm ---
+message ResetPasswordConfirmRequest {
+  string email = 1;
+  string code = 2;
+  string new_password = 3;
+}
+message ResetPasswordConfirmResponse {
+  bool success = 1;
+}
+
+// --- GetProfile ---
+message GetProfileRequest {
+  string user_id = 1;
+}
+message GetProfileResponse {
   string user_id = 1;
   string email = 2;
   string full_name = 3;
-  string role = 4;
+  string phone = 4;
+  string role = 5;
+  string avatar_url = 6;
+  bool is_suspended = 7;
+  int64 created_at = 8;
+}
+
+// --- UpdateProfile ---
+message UpdateProfileRequest {
+  string user_id = 1;
+  string full_name = 2;
+  string phone = 3;
+  string avatar_url = 4;
+}
+message UpdateProfileResponse {
+  bool success = 1;
+}
+
+// --- SuspendAccount ---
+message SuspendAccountRequest {
+  string user_id = 1;
+}
+message SuspendAccountResponse {
+  bool success = 1;
+}
+
+// --- ActivateAccount ---
+message ActivateAccountRequest {
+  string user_id = 1;
+}
+message ActivateAccountResponse {
+  bool success = 1;
 }

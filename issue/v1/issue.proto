@@ -5,49 +5,153 @@ package issue.v1;
 option go_package = "github.com/Garryflop/DormOS-gen-go/issue/v1;issuev1";
 
 service IssueService {
+  // Student
   rpc CreateIssue(CreateIssueRequest) returns (CreateIssueResponse);
   rpc GetIssue(GetIssueRequest) returns (GetIssueResponse);
-  rpc ListIssuesByRoom(ListIssuesByRoomRequest) returns (ListIssuesByRoomResponse);
+  rpc ListMyIssues(ListMyIssuesRequest) returns (ListMyIssuesResponse);
+
+  // Manager+
+  rpc ListAllIssues(ListAllIssuesRequest) returns (ListAllIssuesResponse);
   rpc UpdateIssueStatus(UpdateIssueStatusRequest) returns (UpdateIssueStatusResponse);
+  rpc AssignWorker(AssignWorkerRequest) returns (AssignWorkerResponse);
+  rpc ListWorkers(ListWorkersRequest) returns (ListWorkersResponse);
+
+  // Comments
+  rpc AddComment(AddCommentRequest) returns (AddCommentResponse);
+  rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse);
+
+  // Categories (admin)
+  rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryResponse);
+  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse);
+
+  // Admin
+  rpc DeleteIssue(DeleteIssueRequest) returns (DeleteIssueResponse);
 }
 
+// --- CreateIssue ---
 message CreateIssueRequest {
-  string room_number = 1;
-  string category = 2;
-  string description = 3;
-  repeated string photo_urls = 4;
+  string user_id = 1;
+  string room_number = 2;
+  string category_id = 3;
+  string title = 4;
+  string description = 5;
+  repeated string photo_urls = 6;
 }
-
 message CreateIssueResponse {
   string issue_id = 1;
 }
 
+// --- GetIssue ---
 message GetIssueRequest {
   string issue_id = 1;
 }
-
 message GetIssueResponse {
   string issue_id = 1;
-  string room_number = 2;
-  string category = 3;
-  string description = 4;
-  string status = 5;
-  int64 created_at = 6;
+  string user_id = 2;
+  string room_number = 3;
+  string category = 4;
+  string title = 5;
+  string description = 6;
+  string status = 7; // open, in_progress, resolved
+  string assigned_worker = 8;
+  repeated string photo_urls = 9;
+  int64 created_at = 10;
+  int64 updated_at = 11;
 }
 
-message ListIssuesByRoomRequest {
-  string room_number = 1;
+// --- ListMyIssues ---
+message ListMyIssuesRequest {
+  string user_id = 1;
 }
-
-message ListIssuesByRoomResponse {
+message ListMyIssuesResponse {
   repeated GetIssueResponse issues = 1;
 }
 
-message UpdateIssueStatusRequest {
-  string issue_id = 1;
-  string new_status = 2;
+// --- ListAllIssues ---
+message ListAllIssuesRequest {
+  string status = 1;      // optional filter
+  string category_id = 2; // optional filter
+}
+message ListAllIssuesResponse {
+  repeated GetIssueResponse issues = 1;
+  int32 total = 2;
 }
 
+// --- UpdateIssueStatus ---
+message UpdateIssueStatusRequest {
+  string issue_id = 1;
+  string new_status = 2; // "open", "in_progress", "resolved"
+}
 message UpdateIssueStatusResponse {
   bool success = 1;
+}
+
+// --- DeleteIssue ---
+message DeleteIssueRequest {
+  string issue_id = 1;
+}
+message DeleteIssueResponse {
+  bool success = 1;
+}
+
+// --- AddComment ---
+message AddCommentRequest {
+  string issue_id = 1;
+  string user_id = 2;
+  string content = 3;
+}
+message AddCommentResponse {
+  string comment_id = 1;
+}
+
+// --- ListComments ---
+message ListCommentsRequest {
+  string issue_id = 1;
+}
+message ListCommentsResponse {
+  repeated CommentItem comments = 1;
+}
+message CommentItem {
+  string comment_id = 1;
+  string user_id = 2;
+  string content = 3;
+  int64 created_at = 4;
+}
+
+// --- AssignWorker ---
+message AssignWorkerRequest {
+  string issue_id = 1;
+  string worker_name = 2;
+}
+message AssignWorkerResponse {
+  bool success = 1;
+}
+
+// --- ListWorkers ---
+message ListWorkersRequest {}
+message ListWorkersResponse {
+  repeated WorkerItem workers = 1;
+}
+message WorkerItem {
+  string worker_id = 1;
+  string name = 2;
+  string specialization = 3;
+}
+
+// --- CreateCategory ---
+message CreateCategoryRequest {
+  string name = 1; // "Сантехника", "Электрика"
+}
+message CreateCategoryResponse {
+  string category_id = 1;
+}
+
+// --- ListCategories ---
+message ListCategoriesRequest {}
+message ListCategoriesResponse {
+  repeated CategoryItem categories = 1;
+}
+message CategoryItem {
+  string category_id = 1;
+  string name = 2;
 }

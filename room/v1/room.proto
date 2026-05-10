@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+package room.v1;
+
+option go_package = "github.com/Garryflop/DormOS-gen-go/room/v1;roomv1";
+
+service RoomService {
+  // Room management (admin)
+  rpc CreateRoom(CreateRoomRequest) returns (CreateRoomResponse);
+  rpc GetRoom(GetRoomRequest) returns (GetRoomResponse);
+  rpc ListRooms(ListRoomsRequest) returns (ListRoomsResponse);
+
+  // Resident management (admin)
+  rpc AssignResident(AssignResidentRequest) returns (AssignResidentResponse);
+  rpc RemoveResident(RemoveResidentRequest) returns (RemoveResidentResponse);
+  rpc GetResident(GetResidentRequest) returns (GetResidentResponse);
+  rpc ListResidents(ListResidentsRequest) returns (ListResidentsResponse);
+  rpc UpdateResidentRole(UpdateResidentRoleRequest) returns (UpdateResidentRoleResponse);
+
+  // Dashboard (admin)
+  rpc GetDashboardStats(GetDashboardStatsRequest) returns (GetDashboardStatsResponse);
+}
+
+// --- CreateRoom ---
+message CreateRoomRequest {
+  string room_number = 1;
+  int32 floor = 2;
+  int32 capacity = 3;
+}
+message CreateRoomResponse {
+  string room_id = 1;
+}
+
+// --- GetRoom ---
+message GetRoomRequest {
+  string room_id = 1;
+}
+message GetRoomResponse {
+  string room_id = 1;
+  string room_number = 2;
+  int32 floor = 3;
+  int32 capacity = 4;
+  int32 occupied = 5;
+  repeated ResidentInfo residents = 6;
+}
+
+// --- ListRooms ---
+message ListRoomsRequest {
+  int32 floor = 1; // optional filter
+}
+message ListRoomsResponse {
+  repeated GetRoomResponse rooms = 1;
+}
+
+// --- AssignResident ---
+message AssignResidentRequest {
+  string user_id = 1;
+  string room_id = 2;
+}
+message AssignResidentResponse {
+  string resident_id = 1;
+}
+
+// --- RemoveResident ---
+message RemoveResidentRequest {
+  string user_id = 1;
+}
+message RemoveResidentResponse {
+  bool success = 1;
+}
+
+// --- GetResident ---
+message GetResidentRequest {
+  string user_id = 1;
+}
+message GetResidentResponse {
+  string resident_id = 1;
+  string user_id = 2;
+  string room_number = 3;
+  string role = 4;
+  int64 check_in_date = 5;
+}
+
+// --- ListResidents ---
+message ListResidentsRequest {
+  string room_id = 1; // optional filter
+  string role = 2;     // optional filter
+}
+message ListResidentsResponse {
+  repeated GetResidentResponse residents = 1;
+  int32 total = 2;
+}
+
+// --- UpdateResidentRole ---
+message UpdateResidentRoleRequest {
+  string user_id = 1;
+  string new_role = 2; // "student", "manager", "admin"
+}
+message UpdateResidentRoleResponse {
+  bool success = 1;
+}
+
+// --- GetDashboardStats ---
+message GetDashboardStatsRequest {}
+message GetDashboardStatsResponse {
+  int32 total_residents = 1;
+  int32 total_rooms = 2;
+  int32 occupied_rooms = 3;
+  int32 available_beds = 4;
+  int32 open_issues = 5;
+  int32 upcoming_events = 6;
+}
+
+// --- Shared ---
+message ResidentInfo {
+  string user_id = 1;
+  string full_name = 2;
+  string role = 3;
+}
