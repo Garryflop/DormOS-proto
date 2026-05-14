@@ -8,7 +8,7 @@ service AuthService {
   // Public
   rpc Register(RegisterRequest) returns (RegisterResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
-  rpc ResetPasswordRequest(ResetPasswordRequestReq) returns (ResetPasswordRequestResp);
+  rpc ResetPasswordRequest(ResetPasswordRequestRequest) returns (ResetPasswordRequestResponse);
   rpc ResetPasswordConfirm(ResetPasswordConfirmRequest) returns (ResetPasswordConfirmResponse);
 
   // Authenticated (student+)
@@ -82,10 +82,10 @@ message ChangePasswordResponse {
 }
 
 // --- ResetPasswordRequest ---
-message ResetPasswordRequestReq {
+message ResetPasswordRequestRequest {
   string email = 1;
 }
-message ResetPasswordRequestResp {
+message ResetPasswordRequestResponse {
   bool success = 1;
 }
 
